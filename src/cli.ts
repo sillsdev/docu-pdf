@@ -1,5 +1,5 @@
-import chalk from 'chalk';
-import { Option, program } from 'commander';
+const chalk = require('chalk');
+import { program } from 'commander';
 
 import { generatePDF, generatePDFOptions } from './utils';
 import {
