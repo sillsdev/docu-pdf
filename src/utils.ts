@@ -110,11 +110,18 @@ export async function generatePDF({
   }
 
   // Download buffer of coverImage if exists
+  let imgHtml = '';
   let imgBase64 = '';
+
   if (coverImage) {
     const imgSrc = await page.goto(coverImage);
     const imgSrcBuffer = await imgSrc?.buffer();
     imgBase64 = imgSrcBuffer?.toString('base64') || '';
+    imgHtml = `<img
+    class="cover-img"
+    src="data:image/png;base64, ${imgBase64}"
+    alt=""
+  />`;
   }
 
   // Go to initial page
@@ -135,13 +142,7 @@ export async function generatePDF({
   >
     ${coverTitle ? `<h1>${coverTitle}</h1>` : ''}
     ${coverSub ? `<h3>${coverSub}</h3>` : ''}
-    <img
-      class="cover-img"
-      src="data:image/png;base64, ${imgBase64}"
-      alt=""
-      width="140"
-      height="140"
-    />
+    ${imgHtml}
   </div>`;
 
   // Add Toc
