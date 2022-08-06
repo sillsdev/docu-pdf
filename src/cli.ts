@@ -1,5 +1,7 @@
+#!/usr/bin/env node
+
 const chalk = require('chalk');
-import { program } from 'commander';
+import { Option, program } from 'commander';
 
 import { generatePDF, generatePDFOptions } from './utils';
 import {
@@ -9,21 +11,27 @@ import {
 
 program
   .name('docu-pdf')
+  .usage('--initialDocUrls <comma separated list> [options]')
   .requiredOption(
     '--initialDocURLs <urls>',
     'set urls to start generating PDF from',
     commaSeparatedList,
   )
-  .option(
-    '--excludeURLs <urls>',
-    'urls to be excluded in PDF',
-    commaSeparatedList,
+  .addOption(
+    new Option('--excludeURLs <urls>', 'urls to be excluded in PDF')
+      .argParser(commaSeparatedList)
+      .default('.theme-doc-breadcrumbs,a.theme-edit-this-page'),
   )
-  .requiredOption(
+  .option(
     '--contentSelector <selector>',
     'used to find the part of main content',
+    'article',
   )
-  .requiredOption('--nextPageSelector <selector>', 'used to find next url')
+  .option(
+    '--nextPageSelector <selector>',
+    'used to find next url',
+    'a.pagination-nav__link--next',
+  )
   .option(
     '--excludeSelectors <selectors>',
     'exclude selector ex: .nav',
