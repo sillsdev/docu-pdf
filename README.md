@@ -1,6 +1,6 @@
 ## ℹ️ Note
 
-This is a fork of the fantastic [mr-pdf](https://github.com/kohheepeace/mr-pdf). It is intended for our own internal use in SIL. We're only going to maintain it for use with our Docusaurus sites, not the other systems that mr-pdf supports.
+This is a fork of the much appreciated [mr-pdf](https://github.com/kohheepeace/mr-pdf). Our fork is just to ease maintenance for use with our Docusaurus sites, not the other systems that mr-pdf supports.
 
 ## 📌 Introduction
 
