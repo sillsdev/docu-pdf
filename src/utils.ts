@@ -6,7 +6,7 @@ let contentHTML = '';
 export interface generatePDFOptions {
   initialDocURLs: Array<string>;
   excludeURLs: Array<string>;
-  outputPDFFilename: string;
+  outputPath: string;
   pdfMargin: puppeteer.PDFOptions['margin'];
   contentSelector: string;
   nextPageSelector: string;
@@ -26,7 +26,7 @@ export interface generatePDFOptions {
 export async function generatePDF({
   initialDocURLs,
   excludeURLs,
-  outputPDFFilename = 'mr-pdf.pdf',
+  outputPath,
   pdfMargin = { top: 32, right: 32, bottom: 32, left: 32 },
   contentSelector,
   nextPageSelector,
@@ -182,12 +182,16 @@ export async function generatePDF({
     await page.addStyleTag({ content: cssStyle });
   }
 
+  console.log(chalk.cyan(`Loading lazy images...`));
+
   // Scroll to the bottom of the page with puppeteer-autoscroll-down
   // This forces lazy-loading images to load
   await scrollPageToBottom(page, {});
 
+  console.log(chalk.cyan(`Creating PDF at ${outputPath}`));
+
   await page.pdf({
-    path: outputPDFFilename,
+    path: outputPath,
     format: pageSize,
     printBackground: true,
     margin: pdfMargin,

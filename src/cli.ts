@@ -11,16 +11,13 @@ import {
 
 program
   .name('docu-pdf')
-  .usage('--initialDocUrls <comma separated list> [options]')
-  .requiredOption(
-    '--initialDocURLs <urls>',
-    'set urls to start generating PDF from',
+  .usage('<comma separated list of urls> [options]')
+  .argument('<urls>', 'comma-separated urls to start generating PDF from')
+  .option(
+    '--excludeURLs <urls>',
+    'urls to be excluded in PDF',
     commaSeparatedList,
-  )
-  .addOption(
-    new Option('--excludeURLs <urls>', 'urls to be excluded in PDF')
-      .argParser(commaSeparatedList)
-      .default('.theme-doc-breadcrumbs,a.theme-edit-this-page'),
+    [],
   )
   .option(
     '--contentSelector <selector>',
@@ -36,12 +33,13 @@ program
     '--excludeSelectors <selectors>',
     'exclude selector ex: .nav',
     commaSeparatedList,
+    ['.theme-doc-breadcrumbs,a.theme-edit-this-page'],
   )
   .option(
     '--cssStyle <cssString>',
     'css style to adjust PDF output ex: body{padding-top: 0;}',
   )
-  .option('--outputPDFFilename <filename>', 'name of output PDF file')
+  .option('--outputPath <filename>', 'path to the output PDF file', 'site.pdf')
   .option(
     '--pdfMargin <margin>',
     'set margin around PDF file',
@@ -55,7 +53,8 @@ program
   .option('--waitForRender <timeout>', 'wait for document render')
   .option('--headerTemplate <html>', 'html template for page header')
   .option('--footerTemplate <html>', 'html template for page footer')
-  .action((options: generatePDFOptions) => {
+  .action((urls, options: generatePDFOptions) => {
+    options.initialDocURLs = commaSeparatedList(urls);
     generatePDF(options)
       .then(() => {
         console.log(chalk.green('Finish generating PDF!'));

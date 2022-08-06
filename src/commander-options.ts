@@ -2,7 +2,7 @@ import puppeteer = require('puppeteer');
 
 export function commaSeparatedList(
   value: string,
-  dummyPrevious: any,
+  dummyPrevious?: any,
 ): Array<string> {
   return value.split(',');
 }
