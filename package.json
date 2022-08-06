@@ -1,63 +1,48 @@
 {
-  "name": "mr-pdf",
-  "version": "1.1.0",
-  "description": "Generate pdf from document",
+  "name": "docu-pdf",
+  "version": "0.0.0-development",
+  "description": "Generate pdf from docusaurus site",
   "main": "lib/cli.js",
   "scripts": {
-    "dev": "tsc --watch",
     "build": "tsc",
-    "prepare": "tsc",
-    "lint": "eslint \"*/**/*.{js,ts}\"",
-    "lintfix": "eslint \"*/**/*.{js,ts}\" --fix"
+    "semantic-release": "semantic-release"
   },
   "engines": {
-    "node": "^10.17.0 || >=11.14.0"
+    "node": ">=14"
   },
   "bin": {
-    "mr-pdf": "lib/cli.js"
+    "docu-pdf": "dist/cli.js"
   },
   "keywords": [
     "pdf",
-    "docusaurus",
-    "vuepress",
-    "mkdocs",
-    "gitbook"
+    "docusaurus"
   ],
-  "homepage": "https://github.com/kohheepeace/mr-pdf",
-  "author": "Kohhee Peace <kohheepeace@gmail.com> (http://github.com/kohheePeace)",
+  "homepage": "https://github.com/BloomBooks/docu-pdf",
   "license": "MIT",
   "dependencies": {
     "chalk": "^3.0.0",
-    "commander": "^4.1.1",
+    "commander": "^9.4.0",
     "puppeteer": "^2.1.1",
     "puppeteer-autoscroll-down": "^1.1.1"
   },
   "devDependencies": {
-    "@tsconfig/node14": "^1.0.0",
     "@types/node": "^15.6.1",
     "@types/puppeteer": "^2.0.1",
-    "@typescript-eslint/eslint-plugin": "^3.9.0",
-    "@typescript-eslint/parser": "^3.9.0",
-    "eslint": "^7.7.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "husky": "^4.2.5",
-    "lint-staged": "^10.2.11",
-    "prettier": "2.0.5",
-    "typescript": "^3.8.3"
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
+    "eslint": "^8.21.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "2.7.1",
+    "semantic-release": "^19.0.3",
+    "typescript": "^4.7.4"
   },
   "files": [
-    "lib/**/*",
-    "bin/**/*"
+    "dist/**/*"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts}": [
-      "./node_modules/.bin/eslint --fix"
+  "release": {
+    "branches": [
+      "main"
     ]
   }
 }

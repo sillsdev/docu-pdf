@@ -1,17 +1,15 @@
-## ⚠️ Caution!
-Currently, this package is not catching up with docusaurus v2 HTML markup, so command may not find the correct HTML to loop through docs. Please modify the command to find correct HTML markup by yourself.
+## ℹ️ Note
+
+This is a fork of the fantastic [mr-pdf](https://github.com/kohheepeace/mr-pdf). It is intended for our own internal use in SIL. We're only going to maintain it for use with our Docusaurus sites, not the other systems that mr-pdf supports.
 
 ## 📌 Introduction
 
-This is a PDF generator from document website such as `docusaurus`, `vuepress`, `mkdocs`.
-
+This is a command line tool for creating PDFs from documentation sites built with [Docusaurus](https://docusaurus.io). While your browser can make pdfs of individual pages, this makes one of _all_ the pages.
 
 ## ⚡ Usage
 
-For [docusaurus v1](https://v1.docusaurus.io/docs/en/installation)
-
 ```shell
-npx mr-pdf --initialDocURLs="https://v1.docusaurus.io/docs/en/installation" --paginationSelector=".docs-prevnext > a.docs-next" --excludeSelectors=".fixedHeaderContainer,footer.nav-footer,#docsNav,nav.onPageNav,a.edit-page-link,div.docs-prevnext" --cssStyle=".navPusher {padding-top: 0;}" --contentSelector="article"
+npx doc-pdf --initialDocURLs="https://docs.bloomlibrary.org/" \
 ```
 
 ## 🍗 CLI Options

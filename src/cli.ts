@@ -1,7 +1,5 @@
-#!/usr/bin/env node
-
-import chalk = require('chalk');
-import program = require('commander');
+import chalk from 'chalk';
+import { Option, program } from 'commander';
 
 import { generatePDF, generatePDFOptions } from './utils';
 import {
@@ -10,7 +8,7 @@ import {
 } from './commander-options';
 
 program
-  .name('mr-pdf')
+  .name('docu-pdf')
   .requiredOption(
     '--initialDocURLs <urls>',
     'set urls to start generating PDF from',

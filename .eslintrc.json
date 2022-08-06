@@ -5,9 +5,16 @@
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": ["prettier"],
+  "plugins": [
+    "prettier"
+  ],
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
   },
   "extends": [
     "plugin:@typescript-eslint/recommended",
