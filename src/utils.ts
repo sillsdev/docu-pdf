@@ -9,8 +9,8 @@ export interface generatePDFOptions {
   outputPDFFilename: string;
   pdfMargin: puppeteer.PDFOptions['margin'];
   contentSelector: string;
-  paginationSelector: string;
-  pdfFormat: puppeteer.PDFFormat;
+  nextPageSelector: string;
+  pageSize: puppeteer.PDFFormat;
   excludeSelectors: Array<string>;
   cssStyle: string;
   puppeteerArgs: Array<string>;
@@ -29,8 +29,8 @@ export async function generatePDF({
   outputPDFFilename = 'mr-pdf.pdf',
   pdfMargin = { top: 32, right: 32, bottom: 32, left: 32 },
   contentSelector,
-  paginationSelector,
-  pdfFormat,
+  nextPageSelector,
+  pageSize,
   excludeSelectors,
   cssStyle,
   puppeteerArgs,
@@ -99,14 +99,14 @@ export async function generatePDF({
       }
 
       // Find next page url before DOM operations
-      nextPageURL = await page.evaluate((paginationSelector) => {
-        const element = document.querySelector(paginationSelector);
+      nextPageURL = await page.evaluate((nextPageSelector) => {
+        const element = document.querySelector(nextPageSelector);
         if (element) {
           return (element as HTMLLinkElement).href;
         } else {
           return '';
         }
-      }, paginationSelector);
+      }, nextPageSelector);
     }
   }
 
@@ -189,7 +189,7 @@ export async function generatePDF({
 
   await page.pdf({
     path: outputPDFFilename,
-    format: pdfFormat,
+    format: pageSize,
     printBackground: true,
     margin: pdfMargin,
     displayHeaderFooter: !!(headerTemplate || footerTemplate),

@@ -23,7 +23,7 @@ program
     '--contentSelector <selector>',
     'used to find the part of main content',
   )
-  .requiredOption('--paginationSelector <selector>', 'used to find next url')
+  .requiredOption('--nextPageSelector <selector>', 'used to find next url')
   .option(
     '--excludeSelectors <selectors>',
     'exclude selector ex: .nav',
@@ -39,7 +39,7 @@ program
     'set margin around PDF file',
     generatePuppeteerPDFMargin,
   )
-  .option('--pdfFormat <format>', 'pdf format ex: A3, A4...')
+  .option('--pageSize <format>', 'pdf page size ex: A3, A4...')
   .option('--coverTitle <title>', 'title for PDF cover')
   .option('--coverImage <src>', 'image for PDF cover. *.svg file not working!')
   .option('--disableTOC', 'disable table of contents')
