@@ -32,11 +32,3 @@ npx docu-pdf https://docs.bloomlibrary.org/
 | `--headerTemplate`    | No       | HTML template for the print header. Please check this link for details of injecting values [Puppeteer document](https://pptr.dev/#?product=Puppeteer&show=api-pagepdfoptions)      |
 | `--footerTemplate`    | No       | HTML template for the print footer. Please check this link for details of injecting values [Puppeteer document](https://pptr.dev/#?product=Puppeteer&show=api-pagepdfoptions)      |
 |                       |          |                                                                                                                                                                                    |
-
-## 🎉 Thanks from the upstream mr-pdf:
-
-This repo's code is coming from <https://github.com/KohheePeace/docusaurus-pdf>.
-
-Thanks for awesome code made by [@maxarndt](https://github.com/maxarndt) and [@aloisklink](https://github.com/aloisklink).
-
-[@bojl](https://github.com/bojl) approach to make TOC was awesome and breakthrough.
