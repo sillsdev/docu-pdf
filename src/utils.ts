@@ -1,4 +1,4 @@
-import chalk = require('chalk');
+const chalk = require('chalk');
 import puppeteer = require('puppeteer');
 import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
 
@@ -6,11 +6,11 @@ let contentHTML = '';
 export interface generatePDFOptions {
   initialDocURLs: Array<string>;
   excludeURLs: Array<string>;
-  outputPDFFilename: string;
+  outputPath: string;
   pdfMargin: puppeteer.PDFOptions['margin'];
   contentSelector: string;
   nextPageSelector: string;
-  pageSize: puppeteer.PDFFormat;
+  pageSize: puppeteer.PaperFormat;
   excludeSelectors: Array<string>;
   cssStyle: string;
   puppeteerArgs: Array<string>;
@@ -26,7 +26,7 @@ export interface generatePDFOptions {
 export async function generatePDF({
   initialDocURLs,
   excludeURLs,
-  outputPDFFilename = 'mr-pdf.pdf',
+  outputPath,
   pdfMargin = { top: 32, right: 32, bottom: 32, left: 32 },
   contentSelector,
   nextPageSelector,
@@ -57,7 +57,7 @@ export async function generatePDF({
       if (waitForRender) {
         await page.goto(`${nextPageURL}`);
         console.log(chalk.green('Rendering...'));
-        await page.waitFor(waitForRender);
+        await page.waitForTimeout(waitForRender);
       } else {
         // Go to the page specified by nextPageURL
         await page.goto(`${nextPageURL}`, {
@@ -69,9 +69,8 @@ export async function generatePDF({
       // Get the HTML string of the content section.
       const html = await page.evaluate(
         ({ contentSelector }) => {
-          const element: HTMLElement | null = document.querySelector(
-            contentSelector,
-          );
+          const element: HTMLElement | null =
+            document.querySelector(contentSelector);
           if (element) {
             // Add pageBreak for PDF
             element.style.pageBreakAfter = 'always';
@@ -111,11 +110,18 @@ export async function generatePDF({
   }
 
   // Download buffer of coverImage if exists
+  let imgHtml = '';
   let imgBase64 = '';
+
   if (coverImage) {
     const imgSrc = await page.goto(coverImage);
     const imgSrcBuffer = await imgSrc?.buffer();
     imgBase64 = imgSrcBuffer?.toString('base64') || '';
+    imgHtml = `<img
+    class="cover-img"
+    src="data:image/png;base64, ${imgBase64}"
+    alt=""
+  />`;
   }
 
   // Go to initial page
@@ -136,13 +142,7 @@ export async function generatePDF({
   >
     ${coverTitle ? `<h1>${coverTitle}</h1>` : ''}
     ${coverSub ? `<h3>${coverSub}</h3>` : ''}
-    <img
-      class="cover-img"
-      src="data:image/png;base64, ${imgBase64}"
-      alt=""
-      width="140"
-      height="140"
-    />
+    ${imgHtml}
   </div>`;
 
   // Add Toc
@@ -183,12 +183,16 @@ export async function generatePDF({
     await page.addStyleTag({ content: cssStyle });
   }
 
+  console.log(chalk.cyan(`Loading lazy images...`));
+
   // Scroll to the bottom of the page with puppeteer-autoscroll-down
   // This forces lazy-loading images to load
   await scrollPageToBottom(page, {});
 
+  console.log(chalk.cyan(`Creating PDF at ${outputPath}`));
+
   await page.pdf({
-    path: outputPDFFilename,
+    path: outputPath,
     format: pageSize,
     printBackground: true,
     margin: pdfMargin,

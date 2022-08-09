@@ -1,4 +1,6 @@
-import chalk from 'chalk';
+#!/usr/bin/env node
+
+const chalk = require('chalk');
 import { Option, program } from 'commander';
 
 import { generatePDF, generatePDFOptions } from './utils';
@@ -9,31 +11,35 @@ import {
 
 program
   .name('docu-pdf')
-  .requiredOption(
-    '--initialDocURLs <urls>',
-    'set urls to start generating PDF from',
-    commaSeparatedList,
-  )
+  .usage('<comma separated list of urls> [options]')
+  .argument('<urls>', 'comma-separated urls to start generating PDF from')
   .option(
     '--excludeURLs <urls>',
     'urls to be excluded in PDF',
     commaSeparatedList,
+    [],
   )
-  .requiredOption(
+  .option(
     '--contentSelector <selector>',
     'used to find the part of main content',
+    'article',
   )
-  .requiredOption('--nextPageSelector <selector>', 'used to find next url')
+  .option(
+    '--nextPageSelector <selector>',
+    'used to find next url',
+    'a.pagination-nav__link--next',
+  )
   .option(
     '--excludeSelectors <selectors>',
     'exclude selector ex: .nav',
     commaSeparatedList,
+    ['.theme-doc-breadcrumbs,a.theme-edit-this-page'],
   )
   .option(
     '--cssStyle <cssString>',
     'css style to adjust PDF output ex: body{padding-top: 0;}',
   )
-  .option('--outputPDFFilename <filename>', 'name of output PDF file')
+  .option('--outputPath <filename>', 'path to the output PDF file', 'site.pdf')
   .option(
     '--pdfMargin <margin>',
     'set margin around PDF file',
@@ -47,7 +53,8 @@ program
   .option('--waitForRender <timeout>', 'wait for document render')
   .option('--headerTemplate <html>', 'html template for page header')
   .option('--footerTemplate <html>', 'html template for page footer')
-  .action((options: generatePDFOptions) => {
+  .action((urls, options: generatePDFOptions) => {
+    options.initialDocURLs = commaSeparatedList(urls);
     generatePDF(options)
       .then(() => {
         console.log(chalk.green('Finish generating PDF!'));
