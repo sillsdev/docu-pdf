@@ -2,17 +2,17 @@
 
 This is a fork of the much appreciated [mr-pdf](https://github.com/kohheepeace/mr-pdf). Our fork is just to ease maintenance for use with our Docusaurus sites, not the other systems that mr-pdf supports.
 
-## 📌 Introduction
+## About docu-pdf
 
 This is a command line tool for creating PDFs from documentation sites built with [Docusaurus](https://docusaurus.io). While your browser can make pdfs of individual pages, this makes one of _all_ the pages.
 
-## ⚡ Usage
+## Usage
 
 ```shell
 npx docu-pdf https://docs.bloomlibrary.org/
 ```
 
-## 🍗 CLI Options
+## CLI Options
 
 | Option                | Required | Description                                                                                                                                                                        |
 | --------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
