@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const chalk = require('chalk');
-import { Option, program } from 'commander';
+import { program } from 'commander';
 
 import { generatePDF, generatePDFOptions } from './utils';
 import {
@@ -13,6 +13,7 @@ program
   .name('docu-pdf')
   .usage('<comma separated list of urls> [options]')
   .argument('<urls>', 'comma-separated urls to start generating PDF from')
+  .showHelpAfterError(true)
   .option(
     '--excludeURLs <urls>',
     'urls to be excluded in PDF',
@@ -46,10 +47,8 @@ program
     generatePuppeteerPDFMargin,
   )
   .option('--pageSize <format>', 'pdf page size ex: A3, A4...')
-  .option('--coverTitle <title>', 'title for PDF cover')
-  .option('--coverImage <src>', 'image for PDF cover. *.svg file not working!')
+  .option('--coverPath <string>', 'path to HTML snippet cover (see README)')
   .option('--disableTOC', 'disable table of contents')
-  .option('--coverSub <subtitle>', 'subtitle for PDF cover')
   .option('--waitForRender <timeout>', 'wait for document render')
   .option('--headerTemplate <html>', 'html template for page header')
   .option('--footerTemplate <html>', 'html template for page footer')

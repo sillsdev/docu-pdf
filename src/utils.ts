@@ -1,9 +1,10 @@
 const chalk = require('chalk');
+import * as fs from 'fs';
 import puppeteer = require('puppeteer');
 import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
 
 let contentHTML = '';
-export interface generatePDFOptions {
+export type generatePDFOptions = {
   initialDocURLs: Array<string>;
   excludeURLs: Array<string>;
   outputPath: string;
@@ -14,14 +15,12 @@ export interface generatePDFOptions {
   excludeSelectors: Array<string>;
   cssStyle: string;
   puppeteerArgs: Array<string>;
-  coverTitle: string;
-  coverImage: string;
+  coverPath: string;
   disableTOC: boolean;
-  coverSub: string;
   waitForRender: number;
   headerTemplate: string;
   footerTemplate: string;
-}
+};
 
 export async function generatePDF({
   initialDocURLs,
@@ -34,16 +33,19 @@ export async function generatePDF({
   excludeSelectors,
   cssStyle,
   puppeteerArgs,
-  coverTitle,
-  coverImage,
+  coverPath,
   disableTOC,
-  coverSub,
+
   waitForRender,
   headerTemplate,
   footerTemplate,
 }: generatePDFOptions): Promise<void> {
   const browser = await puppeteer.launch({ args: puppeteerArgs });
   const page = await browser.newPage();
+
+  if (coverPath?.length > 0 && !fs.existsSync(coverPath)) {
+    throw console.error(chalk.red(`Could not find coverPath "${coverPath}"`));
+  }
 
   for (const url of initialDocURLs) {
     let nextPageURL = url;
@@ -109,25 +111,14 @@ export async function generatePDF({
     }
   }
 
-  // Download buffer of coverImage if exists
-  let imgHtml = '';
-  let imgBase64 = '';
-
-  if (coverImage) {
-    const imgSrc = await page.goto(coverImage);
-    const imgSrcBuffer = await imgSrc?.buffer();
-    imgBase64 = imgSrcBuffer?.toString('base64') || '';
-    imgHtml = `<img
-    class="cover-img"
-    src="data:image/png;base64, ${imgBase64}"
-    alt=""
-  />`;
-  }
-
   // Go to initial page
   await page.goto(`${initialDocURLs[0]}`, { waitUntil: 'networkidle0' });
 
-  const coverHTML = `
+  let coverHTML = '';
+  if (coverPath) {
+    coverHTML = fs.readFileSync(coverPath, 'utf8');
+  } else {
+    coverHTML = `
   <div
     class="pdf-cover"
     style="
@@ -140,10 +131,11 @@ export async function generatePDF({
       text-align: center;
     "
   >
-    ${coverTitle ? `<h1>${coverTitle}</h1>` : ''}
-    ${coverSub ? `<h3>${coverSub}</h3>` : ''}
-    ${imgHtml}
+    <h1>${initialDocURLs
+      .map((url) => url.replace('https://', ''))
+      .join(' ')}</h1>
   </div>`;
+  }
 
   // Add Toc
   const { modifiedContentHTML, tocHTML } = generateToc(contentHTML);
