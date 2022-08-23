@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const chalk = require('chalk');
+const pkg = require('../package.json');
 import { program } from 'commander';
 
 import { generatePDF, generatePDFOptions } from './utils';
@@ -8,6 +9,8 @@ import {
   commaSeparatedList,
   generatePuppeteerPDFMargin,
 } from './commander-options';
+
+console.log(`docu-pdf version ${pkg.version}`);
 
 program
   .name('docu-pdf')
@@ -75,5 +78,5 @@ program
         process.exit(1);
       });
   });
-
+program.showHelpAfterError();
 program.parse(process.argv);
