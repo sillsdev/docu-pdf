@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "semantic-release": "semantic-release",
-    "sample:min": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/",
+    "sample:min": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/ --tocLevel 2",
     "sample:cover": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/ --coverPath sampleCustomCover.htm"
   },
   "engines": {

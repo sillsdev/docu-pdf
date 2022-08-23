@@ -16,6 +16,7 @@ export type generatePDFOptions = {
   cssStyle: string;
   puppeteerArgs: Array<string>;
   coverPath: string;
+  tocLevel: number;
   disableTOC: boolean;
   waitForRender: number;
   headerTemplate: string;
@@ -34,8 +35,8 @@ export async function generatePDF({
   cssStyle,
   puppeteerArgs,
   coverPath,
+  tocLevel,
   disableTOC,
-
   waitForRender,
   headerTemplate,
   footerTemplate,
@@ -138,7 +139,7 @@ export async function generatePDF({
   }
 
   // Add Toc
-  const { modifiedContentHTML, tocHTML } = generateToc(contentHTML);
+  const { modifiedContentHTML, tocHTML } = generateToc(contentHTML, tocLevel);
 
   // Restructuring the html of a document
   await page.evaluate(
@@ -194,18 +195,16 @@ export async function generatePDF({
   });
 }
 
-function generateToc(contentHtml: string) {
+function generateToc(contentHtml: string, tocLevel: number) {
   const headers: Array<{
     header: string;
     level: number;
     id: string;
   }> = [];
 
-  // Create TOC only for h1~h3
-  const modifiedContentHTML = contentHtml.replace(
-    /<h[1-3](.+?)<\/h[1-3]( )*>/g,
-    htmlReplacer,
-  );
+  // Create TOC down to specified header level
+  const re = new RegExp(`<h[1-${tocLevel}](.+?)</h[1-${tocLevel}]( )*>`, 'g');
+  const modifiedContentHTML = contentHtml.replace(re, htmlReplacer);
 
   function htmlReplacer(matchedStr: string) {
     // docusaurus inserts #s into headers for direct links to the header

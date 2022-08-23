@@ -11,7 +11,7 @@ import {
 
 program
   .name('docu-pdf')
-  .usage('<comma separated list of urls> [options]')
+  .usage('urls [options]')
   .argument('<urls>', 'comma-separated urls to start generating PDF from')
   .showHelpAfterError(true)
   .option('--outputPath <filename>', 'path to the output PDF file', 'site.pdf')
@@ -38,6 +38,11 @@ program
     'a.pagination-nav__link--next',
   )
   .option(
+    '--tocLevel <number>',
+    'The minimum header level to include in the table of contents. E.g. "1" (default), "2", or "3"',
+    '1',
+  )
+  .option(
     '--excludeSelectors <selectors>',
     'CSS selector for HTML elements. E.g. .nav,.sidebar',
     commaSeparatedList,
@@ -52,7 +57,10 @@ program
     'set margin around PDF file',
     generatePuppeteerPDFMargin,
   )
-  .option('--waitForRender <timeout>', 'wait for document render')
+  .option(
+    '--waitForRender <timeout>',
+    'milliseconds to wait for document render',
+  )
   .option('--headerTemplate <html>', 'html template for page header')
   .option('--footerTemplate <html>', 'html template for page footer')
   .action((urls, options: generatePDFOptions) => {
