@@ -6,7 +6,8 @@
     "build": "tsc",
     "semantic-release": "semantic-release",
     "sample:min": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/ --tocLevel 2",
-    "sample:cover": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/ --coverPath sampleCustomCover.htm"
+    "sample:cover": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/ --coverPath sampleCustomCover.htm",
+    "sample:indirection": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/ --coverPath sampleCustomCover.htm --excludeURLs=\"@exclude.txt\""
   },
   "engines": {
     "node": ">=14"

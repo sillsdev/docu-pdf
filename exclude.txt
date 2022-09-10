@@ -1,0 +1,3 @@
+https://sillsdev.github.io/docu-notion-sample-site/Examples/Fruits/bananas/
+https://sillsdev.github.io/docu-notion-sample-site/Examples/Fruits/apples/
+https://sillsdev.github.io/docu-notion-sample-site/Examples/Fruits/oranges/
