@@ -103,6 +103,7 @@ export async function generatePDF({
               fs.readFileSync(path, { encoding: 'utf8', flag: 'r' }).split(/\r\n|\r|\n/g).map(elem => elem.trim())
                 .forEach(url => {
                   normalUrls.push(url);
+                  console.log(`@${path} exclusion of ${url}`);
                 })
             } else {
               console.log(`Could not find ${path}.`);
