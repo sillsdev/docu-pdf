@@ -100,7 +100,7 @@ export async function generatePDF({
           .forEach(elem => {
             const path = elem.substring(1);
             if (fs.existsSync(path)) {
-              fs.readFileSync(path, { encoding: 'utf8', flag: 'r' }).split(/\r\n|\r|\n/g)
+              fs.readFileSync(path, { encoding: 'utf8', flag: 'r' }).split(/\r\n|\r|\n/g).map(elem => elem.trim())
                 .forEach(url => {
                   normalUrls.push(url);
                 })
