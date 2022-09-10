@@ -1,6 +1,6 @@
 ## ℹ️ Note
 
-This is a fork of the much appreciated [mr-pdf](https://github.com/kohheepeace/mr-pdf). Our fork is just to ease maintenance for use with our Docusaurus sites, not the other systems that mr-pdf supports.
+This is a fork of the much appreciated [mr-pdf](https://github.com/kohheepeace/mr-pdf). This fork is makes life easier for Windows users who hit the hard limit on command line length when specifying a long list of excluded URLs. The exclusion list can include items that being with a "@" which are local files containing lists of urls.
 
 ## About docu-pdf
 
