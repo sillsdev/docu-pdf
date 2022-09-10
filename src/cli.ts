@@ -20,7 +20,7 @@ program
   .option('--outputPath <filename>', 'path to the output PDF file', 'site.pdf')
   .option(
     '--excludeURLs <urls>',
-    'URLs to be excluded in PDF. Comma separated.',
+    'URLs to be excluded in PDF. Comma separated. Items starting with "@" introduce files containing URLs.',
     commaSeparatedList,
     [],
   )
