@@ -94,13 +94,16 @@ export async function generatePDF({
 
       // process @ introduced items
       if (excludeURLs) {
-        const normalUrls = excludeURLs.filter(elem => elem.substring(0, 1) !== "@");
+        const normalUrls = excludeURLs
+          .filter(elem => elem.substring(0, 1) !== "@");
         excludeURLs
           .filter(elem => elem.substring(0, 1) === "@")
           .forEach(elem => {
             const path = elem.substring(1);
             if (fs.existsSync(path)) {
-              fs.readFileSync(path, { encoding: 'utf8', flag: 'r' }).split(/\r\n|\r|\n/g).map(elem => elem.trim())
+              fs.readFileSync(path, { encoding: 'utf8', flag: 'r' })
+                .split(/\r\n|\r|\n/g)
+                .map(elem => elem.trim())
                 .forEach(url => {
                   normalUrls.push(url);
                   console.log(`@${path} exclusion of ${url}`);
