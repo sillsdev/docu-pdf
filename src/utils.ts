@@ -128,7 +128,7 @@ export async function generatePDF({
       justify-content: center;
       align-items: center;
       height: 100vh;
-      page-break-after: always;  
+      page-break-after: always;
       text-align: center;
     "
   >
@@ -192,6 +192,7 @@ export async function generatePDF({
     displayHeaderFooter: !!(headerTemplate || footerTemplate),
     headerTemplate,
     footerTemplate,
+    timeout: 0
   });
 }
 
