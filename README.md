@@ -1,6 +1,6 @@
 ## ℹ️ Note
 
-This is a fork of the much appreciated [mr-pdf](https://github.com/kohheepeace/mr-pdf). Our fork is just to ease maintenance for use with our Docusaurus sites, not the other systems that mr-pdf supports.
+This is a fork of the much appreciated [mr-pdf](https://github.com/kohheepeace/mr-pdf). This fork is makes life easier for Windows users who hit the hard limit on command line length when specifying a long list of excluded URLs. The exclusion list can include items that being with a "@" which are local files containing lists of urls.
 
 ## About docu-pdf
 
@@ -32,7 +32,7 @@ npx docu-pdf https://docs.bloomlibrary.org/
 | '--tocLevel <number>' | No       | 'The minimum header level to include in the table of contents. E.g. "1" (default), "2", or "3"'                                                                                                         |
 | `--contentSelector`   | No       | CSS selector for the major sections. Default is `article`.                                                                                                                                              |
 | `--nextPageSelector`  | No       | CSS selector for the link to follow to the next section                                                                                                                                                 |
-| `--excludeURLs`       | No       | URLs to be excluded in PDF. Comma separated.                                                                                                                                                            |
+| `--excludeURLs`       | No       | URLs to be excluded in PDF. Comma separated. "@" introduces external file containing urls.                                                                                                                                                           |
 | `--excludeSelectors`  | No       | CSS selector for HTML elements to omit from PDF. E.g. .nav,.sidebar. Separate each selector **with comma and no space**. You can use space in each selector. e.g. `--excludeSelectors=".nav,.next > a"` |
 | `--cssStyle`          | No       | CSS style to adjust PDF output. E.g. `--cssStyle="body{padding-top: 0;}"` \*If you're project owner you can use `@media print { }` to edit CSS for PDF.                                                 |
 | `--pdfMargin`         | No       | set margin around PDF file. Separate each margin **with comma and no space**. E.g. `--pdfMargin="10,20,30,40"`. This sets margin `top: 10px, right: 20px, bottom: 30px, left: 40px`                     |
