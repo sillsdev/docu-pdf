@@ -60,10 +60,6 @@ program
     'set margin around PDF file',
     generatePuppeteerPDFMargin,
   )
-  .option(
-    '--waitForRender <timeout>',
-    'milliseconds to wait for document render',
-  )
   .option('--headerTemplate <html>', 'html template for page header')
   .option('--footerTemplate <html>', 'html template for page footer')
   .action((urls, options: generatePDFOptions) => {

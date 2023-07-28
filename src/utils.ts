@@ -60,12 +60,11 @@ export async function generatePDF({
     while (nextPageURL) {
       ++index;
       nextPageURL = await doOnePage(
+        page,
         nextPageURL,
         contentSelector,
-        excludeURLs,
-        waitForRender,
-        page,
         nextPageSelector,
+        excludeURLs,
       );
     }
   }
@@ -134,6 +133,10 @@ export async function generatePDF({
   //await sleep(20); use this when debugging with headless=false
 
   console.log(chalk.cyan(`Scrolling and waiting to get all images to load...`));
+  // These numbers, `delay`, `idleTime`, and `timeout` are all guesses.
+  // They seem adequate for https://docs.bloomlibrary.org/ which is served from AWS S3
+  // and has relatively large with lots of images.
+  // If people have problems, we could think harder about them or make them parameters.
   await scrollPageToBottom(page as any, { delay: 100 });
   await page.waitForNetworkIdle({ idleTime: 1000, timeout: 30000 });
   console.log(chalk.cyan(`Creating PDF at ${outputPath}`));
@@ -211,12 +214,11 @@ function generateToc(contentHtml: string, tocLevel: number) {
 }
 
 async function doOnePage(
+  page: puppeteer.Page,
   nextPageURL: string,
   contentSelector: string,
-  excludeURLs: string[],
-  waitForRender: number,
-  page: puppeteer.Page,
   nextPageSelector: string,
+  excludeURLs: string[],
 ): Promise<string> {
   console.log(chalk.cyan(`Retrieving html from ${nextPageURL}`));
 
@@ -224,10 +226,6 @@ async function doOnePage(
     waitUntil: 'networkidle0',
     timeout: 0,
   });
-
-  if (waitForRender) {
-    await page.waitForTimeout(waitForRender);
-  }
 
   // Get the HTML string of the content section.
   const html = await page.evaluate(
