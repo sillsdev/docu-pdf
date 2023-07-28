@@ -70,7 +70,7 @@ program
     options.initialDocURLs = commaSeparatedList(urls);
     generatePDF(options)
       .then(() => {
-        console.log(chalk.green('Finish generating PDF!'));
+        console.log(chalk.green('Done'));
         process.exit(0);
       })
       .catch((err: { stack: any }) => {

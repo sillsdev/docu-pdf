@@ -6,7 +6,10 @@
     "build": "tsc",
     "semantic-release": "semantic-release",
     "sample:min": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/ --tocLevel 2",
-    "sample:cover": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/ --coverPath sampleCustomCover.htm"
+    "sample:cover": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/ --coverPath sampleCustomCover.htm",
+    "sample:bloomdocsViewer": "ts-node src/cli.ts https://docs.bloomlibrary.org/BloomPUBViewer#909fcd17fc7e4f84a2ee782d9c9b6d18 --pageSize \"A4\" --outputPath \"last80-bloomdocs.pdf\"  --tocLevel 1 ",
+    "sample:bloomdocsLast80": "ts-node src/cli.ts https://docs.bloomlibrary.org/opds --pageSize \"A4\" --outputPath \"last80-bloomdocs.pdf\"  --tocLevel 1 ",
+    "sample:bloomdocs": "ts-node src/cli.ts https://docs.bloomlibrary.org --pageSize \"A4\" --outputPath \"bloomdocs.pdf\"  --tocLevel 1 "
   },
   "engines": {
     "node": ">=14"
@@ -22,23 +25,28 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "commander": "^9.4.0",
-    "puppeteer": "^16.1.0",
-    "puppeteer-autoscroll-down": "^1.1.1"
+    "pdf-lib": "^1.17.1",
+    "puppeteer": "^20.9.0",
+    "puppeteer-autoscroll-down": "^1.1.2"
   },
   "devDependencies": {
-    "@tsconfig/node14": "^1.0.0",
-    "@types/node": "^18.7.1",
-    "@typescript-eslint/eslint-plugin": "^5.32.0",
-    "@typescript-eslint/parser": "^5.32.0",
-    "eslint": "^8.21.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "2.7.1",
+    "@tsconfig/node-lts": "^18.12.3",
+    "@types/node": "^20.4.5",
+    "@typescript-eslint/eslint-plugin": "^6.2.0",
+    "@typescript-eslint/parser": "^6.2.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "3.0.0",
     "semantic-release": "^19.0.3",
     "ts-node": "^10.9.1",
-    "typescript": "^4.7.4"
+    "typescript": "^5.1.6"
   },
   "files": [
     "dist/**/*"
-  ]
+  ],
+  "volta": {
+    "node": "18.17.0",
+    "yarn": "1.22.19"
+  }
 }

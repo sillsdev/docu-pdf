@@ -33,7 +33,6 @@ export async function generatePDF({
   pageSize,
   excludeSelectors,
   cssStyle,
-  puppeteerArgs,
   coverPath,
   tocLevel,
   disableTOC,
@@ -41,8 +40,14 @@ export async function generatePDF({
   headerTemplate,
   footerTemplate,
 }: generatePDFOptions): Promise<void> {
-  const browser = await puppeteer.launch({ args: puppeteerArgs });
-  const page = await browser.newPage();
+  let browser = await puppeteer.launch({
+    args: [],
+    // defaultViewport: null, // usefule when testing with headless-false
+    // I'm going with "new" so as not to get surprises when the old is deprecated. Testing on a large site gave
+    // somewhat less megs of PDF size, which could indicate a problem or just better compression.
+    headless: 'new',
+  });
+  let page = await browser.newPage();
 
   if (coverPath?.length > 0 && !fs.existsSync(coverPath)) {
     throw console.error(chalk.red(`Could not find coverPath "${coverPath}"`));
@@ -50,70 +55,20 @@ export async function generatePDF({
 
   for (const url of initialDocURLs) {
     let nextPageURL = url;
-
+    let index = 0;
     // Create a list of HTML for the content section of all pages by looping
     while (nextPageURL) {
-      console.log();
-      console.log(chalk.cyan(`Retrieving html from ${nextPageURL}`));
-      console.log();
-
-      if (waitForRender) {
-        await page.goto(`${nextPageURL}`);
-        console.log(chalk.green('Rendering...'));
-        await page.waitForTimeout(waitForRender);
-      } else {
-        // Go to the page specified by nextPageURL
-        await page.goto(`${nextPageURL}`, {
-          waitUntil: 'networkidle0',
-          timeout: 0,
-        });
-      }
-
-      // Get the HTML string of the content section.
-      const html = await page.evaluate(
-        ({ contentSelector }) => {
-          const element: HTMLElement | null =
-            document.querySelector(contentSelector);
-          if (element) {
-            // Add pageBreak for PDF
-            element.style.pageBreakAfter = 'always';
-
-            // Open <details> tag
-            const detailsArray = element.getElementsByTagName('details');
-            Array.from(detailsArray).forEach((element) => {
-              element.open = true;
-            });
-
-            return element.outerHTML;
-          } else {
-            return '';
-          }
-        },
-        { contentSelector },
+      ++index;
+      nextPageURL = await doOnePage(
+        nextPageURL,
+        contentSelector,
+        excludeURLs,
+        waitForRender,
+        page,
+        nextPageSelector,
       );
-
-      // Make joined content html
-      if (excludeURLs && excludeURLs.includes(nextPageURL)) {
-        console.log(chalk.green('This URL is excluded.'));
-      } else {
-        contentHTML += html;
-        console.log(chalk.green('Success'));
-      }
-
-      // Find next page url before DOM operations
-      nextPageURL = await page.evaluate((nextPageSelector) => {
-        const element = document.querySelector(nextPageSelector);
-        if (element) {
-          return (element as HTMLLinkElement).href;
-        } else {
-          return '';
-        }
-      }, nextPageSelector);
     }
   }
-
-  // Go to initial page
-  await page.goto(`${initialDocURLs[0]}`, { waitUntil: 'networkidle0' });
 
   let coverHTML = '';
   if (coverPath) {
@@ -171,19 +126,17 @@ export async function generatePDF({
       }, excludeSelector);
     });
 
-  // Add CSS to HTML
+  // Add a custom CSS rule from command line option. We (Bloom-docs) don't use this, so it doesn't get much testing.
   if (cssStyle) {
     await page.addStyleTag({ content: cssStyle });
   }
 
-  console.log(chalk.cyan(`Loading lazy images...`));
+  //await sleep(20); use this when debugging with headless=false
 
-  // Scroll to the bottom of the page with puppeteer-autoscroll-down
-  // This forces lazy-loading images to load
-  await scrollPageToBottom(page, {});
-
+  console.log(chalk.cyan(`Scrolling and waiting to get all images to load...`));
+  await scrollPageToBottom(page as any, { delay: 100 });
+  await page.waitForNetworkIdle({ idleTime: 1000, timeout: 30000 });
   console.log(chalk.cyan(`Creating PDF at ${outputPath}`));
-
   await page.pdf({
     path: outputPath,
     format: pageSize,
@@ -192,7 +145,7 @@ export async function generatePDF({
     displayHeaderFooter: !!(headerTemplate || footerTemplate),
     headerTemplate,
     footerTemplate,
-    timeout: 0
+    timeout: 0,
   });
 }
 
@@ -255,4 +208,74 @@ function generateToc(contentHtml: string, tocLevel: number) {
   `;
 
   return { modifiedContentHTML, tocHTML };
+}
+
+async function doOnePage(
+  nextPageURL: string,
+  contentSelector: string,
+  excludeURLs: string[],
+  waitForRender: number,
+  page: puppeteer.Page,
+  nextPageSelector: string,
+): Promise<string> {
+  console.log(chalk.cyan(`Retrieving html from ${nextPageURL}`));
+
+  await page.goto(`${nextPageURL}`, {
+    waitUntil: 'networkidle0',
+    timeout: 0,
+  });
+
+  if (waitForRender) {
+    await page.waitForTimeout(waitForRender);
+  }
+
+  // Get the HTML string of the content section.
+  const html = await page.evaluate(
+    ({ contentSelector }) => {
+      const element: HTMLElement | null =
+        document.querySelector(contentSelector);
+      if (element) {
+        // Add pageBreak for PDF
+        element.style.pageBreakAfter = 'always';
+
+        // Open <details> tag
+        const detailsArray = element.getElementsByTagName('details');
+        Array.from(detailsArray).forEach((element) => {
+          element.open = true;
+        });
+
+        let s = element.outerHTML;
+        // remove loading="lazy" from images. Note in some tests this helped,
+        // but still the scrolling was needed to get all images. So in the end this might not make a difference?
+        s = s.replace(/loading\s*=\s*"lazy"/g, '');
+        return s;
+      } else {
+        return '';
+      }
+    },
+    { contentSelector },
+  );
+
+  // Make joined content html
+  if (excludeURLs && excludeURLs.includes(nextPageURL)) {
+    console.log(chalk.green('This URL is excluded.'));
+  } else {
+    contentHTML += html;
+  }
+
+  // return the url of the next page (normally, by looking at the footer of the page)
+  return await page.evaluate((nextPageSelector) => {
+    const element = document.querySelector(nextPageSelector);
+    if (element) {
+      return (element as HTMLLinkElement).href;
+    } else {
+      return '';
+    }
+  }, nextPageSelector);
+}
+
+async function sleep(seconds: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 1000 * seconds);
+  });
 }
