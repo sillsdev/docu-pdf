@@ -130,7 +130,7 @@ export async function generatePDF({
     await page.addStyleTag({ content: cssStyle });
   }
 
-  //await sleep(20); use this when debugging with headless=false
+  //await sleep(20); //use this when debugging with headless=false
 
   console.log(chalk.cyan(`Scrolling and waiting to get all images to load...`));
   // These numbers, `delay`, `idleTime`, and `timeout` are all guesses.
@@ -138,7 +138,7 @@ export async function generatePDF({
   // and has relatively large with lots of images.
   // If people have problems, we could think harder about them or make them parameters.
   await scrollPageToBottom(page as any, { delay: 100 });
-  await page.waitForNetworkIdle({ idleTime: 1000, timeout: 30000 });
+  await page.waitForNetworkIdle({ idleTime: 1000, timeout: 60000 });
   console.log(chalk.cyan(`Creating PDF at ${outputPath}`));
   await page.pdf({
     path: outputPath,
