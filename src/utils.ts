@@ -42,10 +42,8 @@ export async function generatePDF({
 }: generatePDFOptions): Promise<void> {
   let browser = await puppeteer.launch({
     args: [],
-    // defaultViewport: null, // usefule when testing with headless-false
-    // I'm going with "new" so as not to get surprises when the old is deprecated. Testing on a large site gave
-    // somewhat less megs of PDF size, which could indicate a problem or just better compression.
-    headless: 'new',
+    // defaultViewport: null, // useful when testing with headless: false
+    // headless: false,
   });
   let page = await browser.newPage();
 
