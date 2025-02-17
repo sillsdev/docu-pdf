@@ -42,6 +42,7 @@ export async function generatePDF({
 }: generatePDFOptions): Promise<void> {
   let browser = await puppeteer.launch({
     args: [],
+    protocolTimeout: 300000,
     // defaultViewport: null, // useful when testing with headless: false
     // headless: false,
   });
@@ -136,7 +137,7 @@ export async function generatePDF({
   // and has relatively large with lots of images.
   // If people have problems, we could think harder about them or make them parameters.
   await scrollPageToBottom(page as any, { delay: 100 });
-  await page.waitForNetworkIdle({ idleTime: 1000, timeout: 60000 });
+  await page.waitForNetworkIdle({ idleTime: 1000, timeout: 300000 });
   console.log(chalk.cyan(`Creating PDF at ${outputPath}`));
   await page.pdf({
     path: outputPath,
