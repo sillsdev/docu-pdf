@@ -21,6 +21,7 @@ export type generatePDFOptions = {
   waitForRender: number;
   headerTemplate: string;
   footerTemplate: string;
+  outline: boolean;
 };
 
 export async function generatePDF({
@@ -39,6 +40,7 @@ export async function generatePDF({
   waitForRender,
   headerTemplate,
   footerTemplate,
+  outline,
 }: generatePDFOptions): Promise<void> {
   let browser = await puppeteer.launch({
     args: [],
@@ -114,6 +116,11 @@ export async function generatePDF({
   );
 
   // Remove unnecessary HTML by using excludeSelectors
+  if(outline) {		//remove nav links to prevent name duplication in outline
+      excludeSelectors.push('.breadcrumbs__link,.breadcrumbs__item,.hash_link');
+  } else {		//default selectors to remove
+      excludeSelectors.push('.theme-doc-breadcrumbs,a.theme-edit-this-page');
+  }
   excludeSelectors &&
     excludeSelectors.map(async (excludeSelector) => {
       // "selector" is equal to "excludeSelector"
@@ -148,6 +155,7 @@ export async function generatePDF({
     headerTemplate,
     footerTemplate,
     timeout: 0,
+    outline: outline,
   });
 }
 
