@@ -23,6 +23,7 @@ npx docu-pdf https://docs.bloomlibrary.org/
 | `--disableTOC`     | No       | Omit the table of contents                                                                                                                                                        |
 | `--headerTemplate` | No       | HTML template for the print header. [More info](https://pptr.dev/api/puppeteer.pdfoptions.headertemplate)                                                                         |
 | `--footerTemplate` | No       | HTML template for the print footer. [More info](https://pptr.dev/api/puppeteer.pdfoptions.footertemplate/)                                                                        |
+| `--outline`        | No       | Include sidebar outline of PDF                                                                                                                                                    |
 
 <details>
   <summary>More options</summary>
