@@ -116,10 +116,12 @@ export async function generatePDF({
   );
 
   // Remove unnecessary HTML by using excludeSelectors
-  if(outline) {		//remove nav links to prevent name duplication in outline
-      excludeSelectors.push('.breadcrumbs__link,.breadcrumbs__item,.hash_link');
-  } else {		//default selectors to remove
-      excludeSelectors.push('.theme-doc-breadcrumbs,a.theme-edit-this-page');
+  if (outline) {
+    //remove nav links to prevent name duplication in outline
+    excludeSelectors.push('.breadcrumbs__link,.breadcrumbs__item,.hash_link');
+  } else {
+    //default selectors to remove
+    excludeSelectors.push('.theme-doc-breadcrumbs,a.theme-edit-this-page');
   }
   excludeSelectors &&
     excludeSelectors.map(async (excludeSelector) => {
