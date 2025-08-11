@@ -49,7 +49,7 @@ program
     '--excludeSelectors <selectors>',
     'CSS selector for HTML elements. E.g. .nav,.sidebar',
     commaSeparatedList,
-    ['.theme-doc-breadcrumbs,a.theme-edit-this-page'],
+    [],
   )
   .option(
     '--cssStyle <cssString>',
@@ -62,6 +62,7 @@ program
   )
   .option('--headerTemplate <html>', 'html template for page header')
   .option('--footerTemplate <html>', 'html template for page footer')
+  .option('--outline','include sidebar outline in PDF')
   .action((urls, options: generatePDFOptions) => {
     options.initialDocURLs = commaSeparatedList(urls);
     generatePDF(options)
