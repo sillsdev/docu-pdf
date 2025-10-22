@@ -42,13 +42,13 @@ export async function generatePDF({
   footerTemplate,
   outline,
 }: generatePDFOptions): Promise<void> {
-  let browser = await puppeteer.launch({
+  const browser = await puppeteer.launch({
     args: [],
     protocolTimeout: 300000,
     // defaultViewport: null, // useful when testing with headless: false
     // headless: false,
   });
-  let page = await browser.newPage();
+  const page = await browser.newPage();
 
   if (coverPath?.length > 0 && !fs.existsSync(coverPath)) {
     throw console.error(chalk.red(`Could not find coverPath "${coverPath}"`));
@@ -146,7 +146,28 @@ export async function generatePDF({
   // and has relatively large with lots of images.
   // If people have problems, we could think harder about them or make them parameters.
   await scrollPageToBottom(page as any, { delay: 100 });
-  await page.waitForNetworkIdle({ idleTime: 1000, timeout: 300000 });
+
+  const isLocalhost = initialDocURLs.some(
+    (url) =>
+      url.includes('localhost') ||
+      url.includes('127.0.0.1') ||
+      url.includes('0.0.0.0'),
+  );
+
+  if (isLocalhost) {
+    // Often dev servers never become truly idle.
+    // Besides, when serving locally, it should be fast anyway.
+    console.log(
+      chalk.yellow(
+        `Detected localhost - waiting 10 seconds for all resources to load...`,
+      ),
+    );
+    await sleep(10);
+  } else {
+    console.log(chalk.yellow(`Waiting for network to become idle...`));
+    await page.waitForNetworkIdle({ idleTime: 1000, timeout: 300000 });
+  }
+
   console.log(chalk.cyan(`Creating PDF at ${outputPath}`));
   await page.pdf({
     path: outputPath,

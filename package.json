@@ -9,7 +9,8 @@
     "sample:cover": "ts-node src/cli.ts https://sillsdev.github.io/docu-notion-sample-site/ --coverPath sampleCustomCover.htm",
     "sample:bloomdocsViewer": "ts-node src/cli.ts https://docs.bloomlibrary.org/BloomPUBViewer#909fcd17fc7e4f84a2ee782d9c9b6d18 --pageSize \"A4\" --outputPath \"last80-bloomdocs.pdf\"  --tocLevel 1 ",
     "sample:bloomdocsLast80": "ts-node src/cli.ts https://docs.bloomlibrary.org/opds --pageSize \"A4\" --outputPath \"last80-bloomdocs.pdf\"  --tocLevel 1 ",
-    "sample:bloomdocs": "ts-node src/cli.ts https://docs.bloomlibrary.org --pageSize \"A4\" --outputPath \"bloomdocs.pdf\"  --tocLevel 1 "
+    "sample:bloomdocs": "ts-node src/cli.ts https://docs.bloomlibrary.org --pageSize \"A4\" --outputPath \"bloomdocs.pdf\"  --tocLevel 1 ",
+    "sample:local": "ts-node src/cli.ts http://localhost:3000 --pageSize \"A4\" --outputPath \"localhost.pdf\" --tocLevel 1"
   },
   "engines": {
     "node": ">=14"
