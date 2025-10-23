@@ -24,6 +24,7 @@ npx docu-pdf https://docs.bloomlibrary.org/
 | `--headerTemplate` | No       | HTML template for the print header. [More info](https://pptr.dev/api/puppeteer.pdfoptions.headertemplate)                                                                         |
 | `--footerTemplate` | No       | HTML template for the print footer. [More info](https://pptr.dev/api/puppeteer.pdfoptions.footertemplate/)                                                                        |
 | `--outline`        | No       | Include sidebar outline of PDF                                                                                                                                                    |
+| `--baseUrlForLinks`| No       | Base URL for links in the PDF                                                                                                                                                      |
 
 <details>
   <summary>More options</summary>

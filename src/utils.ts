@@ -22,6 +22,7 @@ export type generatePDFOptions = {
   headerTemplate: string;
   footerTemplate: string;
   outline: boolean;
+  baseUrlForLinks: string;
 };
 
 export async function generatePDF({
@@ -41,6 +42,7 @@ export async function generatePDF({
   headerTemplate,
   footerTemplate,
   outline,
+  baseUrlForLinks,
 }: generatePDFOptions): Promise<void> {
   const browser = await puppeteer.launch({
     args: [],
@@ -66,6 +68,7 @@ export async function generatePDF({
         contentSelector,
         nextPageSelector,
         excludeURLs,
+        baseUrlForLinks,
       );
     }
   }
@@ -249,6 +252,7 @@ async function doOnePage(
   contentSelector: string,
   nextPageSelector: string,
   excludeURLs: string[],
+  baseUrlForLinks: string,
 ): Promise<string> {
   console.log(chalk.cyan(`Retrieving html from ${nextPageURL}`));
 
@@ -259,7 +263,7 @@ async function doOnePage(
 
   // Get the HTML string of the content section.
   const html = await page.evaluate(
-    ({ contentSelector }) => {
+    ({ contentSelector, baseUrlForLinks }) => {
       const element: HTMLElement | null =
         document.querySelector(contentSelector);
       if (element) {
@@ -272,6 +276,22 @@ async function doOnePage(
           element.open = true;
         });
 
+        if (baseUrlForLinks && baseUrlForLinks.length > 0) {
+          // Replace absolute path links (starting with /) with full URLs
+
+          const baseUrl = baseUrlForLinks.endsWith('/')
+            ? baseUrlForLinks.slice(0, -1)
+            : baseUrlForLinks;
+
+          const links = element.getElementsByTagName('a');
+          Array.from(links).forEach((link) => {
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('/')) {
+              link.setAttribute('href', `${baseUrl}${href}`);
+            }
+          });
+        }
+
         let s = element.outerHTML;
         // remove loading="lazy" from images. Note in some tests this helped,
         // but still the scrolling was needed to get all images. So in the end this might not make a difference?
@@ -281,7 +301,7 @@ async function doOnePage(
         return '';
       }
     },
-    { contentSelector },
+    { contentSelector, baseUrlForLinks },
   );
 
   // Make joined content html
