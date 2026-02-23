@@ -18,7 +18,10 @@ export type generatePDFOptions = {
   coverPath: string;
   tocLevel: number;
   disableTOC: boolean;
-  waitForRender: number;
+  protocolTimeoutMs?: number;
+  scrollDelayMs?: number;
+  scrollSizePx?: number;
+  scrollStepsLimit?: number;
   headerTemplate: string;
   footerTemplate: string;
   outline: boolean;
@@ -35,18 +38,24 @@ export async function generatePDF({
   pageSize,
   excludeSelectors,
   cssStyle,
+  puppeteerArgs,
   coverPath,
   tocLevel,
   disableTOC,
-  waitForRender,
+  protocolTimeoutMs,
+  scrollDelayMs,
+  scrollSizePx,
+  scrollStepsLimit,
   headerTemplate,
   footerTemplate,
   outline,
   baseUrlForLinks,
 }: generatePDFOptions): Promise<void> {
+  const protocolTimeout = protocolTimeoutMs ?? 300000;
+
   const browser = await puppeteer.launch({
-    args: [],
-    protocolTimeout: 300000,
+    args: puppeteerArgs ?? [],
+    protocolTimeout,
     // defaultViewport: null, // useful when testing with headless: false
     // headless: false,
   });
@@ -143,13 +152,6 @@ export async function generatePDF({
 
   //await sleep(20); //use this when debugging with headless=false
 
-  console.log(chalk.cyan(`Scrolling and waiting to get all images to load...`));
-  // These numbers, `delay`, `idleTime`, and `timeout` are all guesses.
-  // They seem adequate for https://docs.bloomlibrary.org/ which is served from AWS S3
-  // and has relatively large with lots of images.
-  // If people have problems, we could think harder about them or make them parameters.
-  await scrollPageToBottom(page as any, { delay: 100 });
-
   const isLocalhost = initialDocURLs.some(
     (url) =>
       url.includes('localhost') ||
@@ -157,15 +159,45 @@ export async function generatePDF({
       url.includes('0.0.0.0'),
   );
 
+  const scrollDelayMsToUse = scrollDelayMs ?? (isLocalhost ? 50 : 100);
+  const scrollSizePxToUse = scrollSizePx ?? (isLocalhost ? 400 : 250);
+  const scrollStepsLimitToUse =
+    scrollStepsLimit ?? (isLocalhost ? 200 : undefined);
+  console.log(chalk.cyan(`Scrolling and waiting to get all images to load...`));
+  console.log(
+    chalk.gray(
+      `scrollSizePx: ${scrollSizePxToUse}, scrollDelayMs: ${scrollDelayMsToUse}, scrollStepsLimit: ${scrollStepsLimitToUse}`,
+    ),
+  );
+  // Scroll settings are configurable from CLI.
+  try {
+    await scrollPageToBottom(page as any, {
+      size: scrollSizePxToUse,
+      delay: scrollDelayMsToUse,
+      stepsLimit: scrollStepsLimitToUse,
+    });
+  } catch (error) {
+    if (isProtocolTimeoutError(error)) {
+      console.log(
+        chalk.red(
+          `Auto-scroll timed out at protocol layer. Adjust --scrollSizePx/--scrollDelayMs/--scrollStepsLimit and retry.`,
+        ),
+      );
+    }
+
+    throw error;
+  }
+
   if (isLocalhost) {
     // Often dev servers never become truly idle.
     // Besides, when serving locally, it should be fast anyway.
+    const localhostWaitSeconds = 10;
     console.log(
       chalk.yellow(
-        `Detected localhost - waiting 10 seconds for all resources to load...`,
+        `Detected localhost - waiting ${localhostWaitSeconds} seconds for all resources to load...`,
       ),
     );
-    await sleep(10);
+    await sleep(localhostWaitSeconds);
   } else {
     console.log(chalk.yellow(`Waiting for network to become idle...`));
     await page.waitForNetworkIdle({ idleTime: 1000, timeout: 300000 });
@@ -326,4 +358,20 @@ async function sleep(seconds: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, 1000 * seconds);
   });
+}
+
+function isProtocolTimeoutError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  const maybeError = error as { message?: unknown; name?: unknown };
+  const message =
+    typeof maybeError.message === 'string' ? maybeError.message : '';
+  const name = typeof maybeError.name === 'string' ? maybeError.name : '';
+
+  return (
+    name.includes('ProtocolError') &&
+    message.includes('Runtime.callFunctionOn timed out')
+  );
 }

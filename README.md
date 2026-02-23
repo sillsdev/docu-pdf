@@ -23,6 +23,10 @@ npx docu-pdf https://docs.bloomlibrary.org/
 | `--disableTOC`     | No       | Omit the table of contents                                                                                                                                                        |
 | `--headerTemplate` | No       | HTML template for the print header. [More info](https://pptr.dev/api/puppeteer.pdfoptions.headertemplate)                                                                         |
 | `--footerTemplate` | No       | HTML template for the print footer. [More info](https://pptr.dev/api/puppeteer.pdfoptions.footertemplate/)                                                                        |
+| `--protocolTimeoutMs` | No      | CDP protocol timeout in milliseconds for Puppeteer. Default is `300000`.                                                                                                           |
+| `--scrollDelayMs`  | No       | Delay in ms between scroll steps. Default: localhost=`50`, non-localhost=`100`.                                                                                                     |
+| `--scrollSizePx`   | No       | Pixels to scroll per step. Default: localhost=`400`, non-localhost=`250`.                                                                                                           |
+| `--scrollStepsLimit` | No      | Maximum number of scroll steps before stopping. Default: localhost=`200`, non-localhost=unlimited.                                                                               |
 | `--outline`        | No       | Include sidebar outline of PDF                                                                                                                                                    |
 | `--baseUrlForLinks`| No       | Base URL for links in the PDF                                                                                                                                                      |
 

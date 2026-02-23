@@ -27,3 +27,17 @@ export function generatePuppeteerPDFMargin(
 
   return generatedMargins;
 }
+
+export function parseNumber(value: string): number {
+  if (value.trim() === '') {
+    throw new Error(`Expected a number but got "${value}"`);
+  }
+
+  const parsed = Number(value);
+
+  if (!Number.isFinite(parsed)) {
+    throw new Error(`Expected a number but got "${value}"`);
+  }
+
+  return parsed;
+}

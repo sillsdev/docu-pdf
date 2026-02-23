@@ -8,6 +8,7 @@ import { generatePDF, generatePDFOptions } from './utils';
 import {
   commaSeparatedList,
   generatePuppeteerPDFMargin,
+  parseNumber,
 } from './commander-options';
 
 console.log(`docu-pdf version ${pkg.version}`);
@@ -62,6 +63,26 @@ program
   )
   .option('--headerTemplate <html>', 'html template for page header')
   .option('--footerTemplate <html>', 'html template for page footer')
+  .option(
+    '--protocolTimeoutMs <number>',
+    'CDP protocol timeout in ms used by Puppeteer (default: 300000).',
+    parseNumber,
+  )
+  .option(
+    '--scrollDelayMs <number>',
+    'Delay in ms between scroll steps. Default: localhost=50, non-localhost=100.',
+    parseNumber,
+  )
+  .option(
+    '--scrollSizePx <number>',
+    'Pixels to scroll per step. Default: localhost=400, non-localhost=250.',
+    parseNumber,
+  )
+  .option(
+    '--scrollStepsLimit <number>',
+    'Maximum number of scroll steps before stopping. Default: localhost=200, non-localhost=unbounded.',
+    parseNumber,
+  )
   .option('--outline', 'include sidebar outline in PDF')
   .option('--baseUrlForLinks <url>', 'Base URL for links in the PDF')
   .action((urls, options: generatePDFOptions) => {
