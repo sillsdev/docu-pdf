@@ -2,6 +2,9 @@
   "name": "docu-pdf",
   "version": "0.0.0-development",
   "description": "Generate pdf from docusaurus site",
+  "repository": {
+    "url": "git+https://github.com/sillsdev/docu-pdf.git"
+  },
   "scripts": {
     "build": "tsc",
     "semantic-release": "semantic-release",
@@ -22,7 +25,7 @@
     "pdf",
     "docusaurus"
   ],
-  "homepage": "https://github.com/BloomBooks/docu-pdf",
+  "homepage": "https://github.com/sillsdev/docu-pdf",
   "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.2",
@@ -40,7 +43,7 @@
     "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "3.0.0",
-    "semantic-release": "^19.0.3",
+    "semantic-release": "^25.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
   },
@@ -48,7 +51,7 @@
     "dist/**/*"
   ],
   "volta": {
-    "node": "18.17.0",
+    "node": "24.14.0",
     "yarn": "1.22.19"
   }
 }
