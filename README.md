@@ -23,12 +23,6 @@ npx docu-pdf https://docs.bloomlibrary.org/
 | `--disableTOC`     | No       | Omit the table of contents                                                                                                                                                        |
 | `--headerTemplate` | No       | HTML template for the print header. [More info](https://pptr.dev/api/puppeteer.pdfoptions.headertemplate)                                                                         |
 | `--footerTemplate` | No       | HTML template for the print footer. [More info](https://pptr.dev/api/puppeteer.pdfoptions.footertemplate/)                                                                        |
-| `--protocolTimeoutMs` | No      | CDP protocol timeout in milliseconds for Puppeteer. Default is `300000`.                                                                                                           |
-| `--scrollDelayMs`  | No       | Delay in ms between scroll steps. Default: localhost=`50`, non-localhost=`100`.                                                                                                     |
-| `--scrollSizePx`   | No       | Pixels to scroll per step. Default: localhost=`400`, non-localhost=`250`.                                                                                                           |
-| `--scrollStepsLimit` | No      | Maximum number of scroll steps before stopping. Default: localhost=`200`, non-localhost=unlimited.                                                                               |
-| `--outline`        | No       | Include sidebar outline of PDF                                                                                                                                                    |
-| `--baseUrlForLinks`| No       | Base URL for links in the PDF                                                                                                                                                      |
 
 <details>
   <summary>More options</summary>
@@ -42,5 +36,11 @@ npx docu-pdf https://docs.bloomlibrary.org/
 | `--excludeSelectors`  | No       | CSS selector for HTML elements to omit from PDF. E.g. .nav,.sidebar. Separate each selector **with comma and no space**. You can use space in each selector. e.g. `--excludeSelectors=".nav,.next > a"` |
 | `--cssStyle`          | No       | CSS style to adjust PDF output. E.g. `--cssStyle="body{padding-top: 0;}"` \*If you're project owner you can use `@media print { }` to edit CSS for PDF.                                                 |
 | `--pdfMargin`         | No       | set margin around PDF file. Separate each margin **with comma and no space**. E.g. `--pdfMargin="10,20,30,40"`. This sets margin `top: 10px, right: 20px, bottom: 30px, left: 40px`                     |
+| `--outline`        | No       | Include sidebar outline of PDF                                                                                                                                                    |
+| `--baseUrlForLinks`| No       | Base URL for links in the PDF                                                                                                                                                      |
+| `--protocolTimeoutMs` | No      | CDP protocol timeout in milliseconds for Puppeteer. Default is `300000`.                                                                                                           |
+| `--scrollDelayMs`  | No       | Delay in ms between scroll steps. Default: localhost=`50`, non-localhost=`100`.                                                                                                     |
+| `--scrollSizePx`   | No       | Pixels to scroll per step. Default: localhost=`400`, non-localhost=`250`.                                                                                                           |
+| `--scrollStepsLimit` | No      | Maximum number of scroll steps before stopping. Default: localhost=`200`, non-localhost=unlimited.                                                                               |
 
 </details>
