@@ -295,18 +295,27 @@ async function doOnePage(
 
   // Get the HTML string of the content section.
   const html = await page.evaluate(
-    ({ contentSelector, baseUrlForLinks }) => {
+    async ({ contentSelector, baseUrlForLinks }) => {
       const element: HTMLElement | null =
         document.querySelector(contentSelector);
       if (element) {
         // Add pageBreak for PDF
         element.style.pageBreakAfter = 'always';
 
-        // Open <details> tag
+        // Open every <details> so its content is captured, then wait for
+        // Docusaurus's expand animation to finish before serializing.
+        // Docusaurus reveals collapsed content asynchronously after the `open`
+        // attribute changes (see facebook/docusaurus#12277), so reading
+        // immediately would capture still-collapsed markup and hide it in the
+        // PDF. The animation scales with content height but is well under a
+        // second for typical blocks; 2s is generous headroom.
         const detailsArray = element.getElementsByTagName('details');
-        Array.from(detailsArray).forEach((element) => {
-          element.open = true;
+        Array.from(detailsArray).forEach((details) => {
+          details.open = true;
         });
+        if (detailsArray.length > 0) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
 
         if (baseUrlForLinks && baseUrlForLinks.length > 0) {
           // Replace absolute path links (starting with /) with full URLs
